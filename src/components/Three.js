@@ -1,7 +1,6 @@
 
 import {useEffect} from 'react'
 import * as THREE from 'three';
-import { PlaneGeometry } from 'three';
 import Stats from './Stats.js'
 
 export default function Shader1(){
@@ -67,7 +66,7 @@ useEffect(() => {
 	const scene = new THREE.Scene();
 	
 	// Create geometry
-	const geometry = new PlaneGeometry( 2, 2, 1);
+	const geometry = new THREE.PlaneGeometry( 2, 2, 1);
 
 	// Create custom material
 	const material = new THREE.ShaderMaterial({
