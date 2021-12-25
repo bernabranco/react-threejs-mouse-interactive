@@ -1,4 +1,4 @@
-# React Threejs Interactive Shader
+# Mouse Interactive
 
 A very simple and highly commented example of how to make a mouse interactive shader with React, Threejs and GLSL.
 
