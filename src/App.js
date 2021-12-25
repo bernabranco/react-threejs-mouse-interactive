@@ -1,7 +1,7 @@
 
 import './App.css';
 
-import Shader1 from './components/Shader1.js'
+import Shader1 from './components/Three.js'
 
 function App() {
   return (

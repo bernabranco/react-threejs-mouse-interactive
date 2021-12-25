@@ -16,6 +16,7 @@ void main(){
 `
 
 const fragmentShader = `
+
 	precision mediump float;
 	uniform float u_time;
 	uniform vec2 u_resolution;
@@ -23,7 +24,7 @@ const fragmentShader = `
 
 	void main() {
 
-	vec2 st = 1.0-gl_FragCoord.xy/u_resolution;
+	vec2 st = gl_FragCoord.xy/u_resolution;
 
 	vec2 coord;
 	coord.x = 5.*st.x;
@@ -41,36 +42,36 @@ const fragmentShader = `
 
 useEffect(() => {
 
-	//GET PERFORMACE STATS, COMMENT TO HIDE
+	let mouseX;
+	let mouseY;
+
+	// See performance stats
 	(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
 
-	// (FRONT-END) CHOOSE SHADER CONTAINER 
+	// Choose shader container
 	let container = document.getElementById('webgl-canvas');
 
-	//DEFINE SIZE
+	// Define shader size
 	let sizes = {
 		width: window.innerWidth,
 		height: window.innerHeight
 	}
 
-	//MOUSE POSITIONS
-	let mouseX;
-	let mouseY;
-
-    //CREATE SHADER CANVAS AND APPEND TO CHOSEN CONTAINER
+    // Create canvas and append to DOM
 	const renderer = new THREE.WebGLRenderer(); 
 	renderer.setPixelRatio(window.devicePixelRatio); 	
 	renderer.setSize(sizes.width, sizes.height); 
 	container.appendChild(renderer.domElement); 
 
-	// CREATE SCENE
+	// Create scene
 	const scene = new THREE.Scene();
 	
-	// CREATE GEOMETRY
+	// Create geometry
 	const geometry = new PlaneGeometry( 2, 2, 1);
 
-	// CREATE CUSTOM MATERIAL
+	// Create custom material
 	const material = new THREE.ShaderMaterial({
+		// uniforms are pass to vert and frag shader
 		uniforms: {
 			u_time: { value: 1.0 },
 			u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
@@ -80,40 +81,38 @@ useEffect(() => {
 		fragmentShader: fragmentShader
 	});
 	
-	// CREATE MESH
+	// Create Mesh
 	const mesh = new THREE.Mesh( geometry, material );
-	scene.add(mesh);
 
-	// CREATE CAMERA
+	// Create Camera
 	const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 1, 1000 );
-	scene.add(camera)
 
-	// FOR VALUES THAT UPDATE EACH FRAME
+	// Add things to scene
+	scene.add(mesh, camera);
+
+	// Update values
 	function render() {
 		renderer.render(scene, camera);
-		//SHADER UNIFORMS
 		material.uniforms.u_time.value += 0.04;
 		material.uniforms.u_mouse.value = new THREE.Vector2(mouseX,mouseY);
+
+		requestAnimationFrame(render);
 	}
 
-	function animate() {
-		requestAnimationFrame(animate);
-		render();
-	}
-	animate();
+	render();
 
-	// EVENT LISTENERS
+	// Add mouse and size event listeners
 	window.addEventListener('resize', onWindowResize, false);
 	window.addEventListener('mousemove', mousePosition, false);
 
-	// GET MOUSE POSITIONS
+	// Update mouse position
 	function mousePosition(e){
 		console.log(mouseX);
 		mouseX = e.pageX;
 		mouseY = e.pageY;
 	}
 
-	// WINDOW RESIZE
+	// Update window size
 	function onWindowResize() {
 		camera.aspect = window.innerWidth / window.innerHeight;
 		camera.updateProjectionMatrix();
@@ -122,8 +121,8 @@ useEffect(() => {
 	});
 
 return(
-   null
-)
+		null
+	)
 }
 
 
